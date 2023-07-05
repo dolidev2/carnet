@@ -2,8 +2,6 @@
     $header = '';
     ob_start();
 ?>
-
-
 <div class="main-body">
     <div class="page-wrapper">
         <!-- Page header start -->
@@ -20,7 +18,7 @@
                     </li>
                     <li class="breadcrumb-item"><a href="<?= URL ?>modele">Modèle</a>
                     </li>
-                    <li class="breadcrumb-item"><a href="<?= URL ?>modele/modifier/<?= $modele->getIdModele() ?>">Modifier</a>
+                    <li class="breadcrumb-item"><a href="<?= URL ?>modele/modifier/<?= $data['modele']['id'] ?>">Modifier</a>
                     </li>
                 </ul>
             </div>
@@ -35,14 +33,15 @@
                     <div class="card">
                         <div class="card-block">
                             <h4 class="sub-title"></h4>
-                            <form method="post" action="<?= URL ?>modele/mv/<?= $modele->getIdModele() ?>"
+                            <form method="post" action="<?= URL ?>modele/mv/<?= $data['modele']['id'] ?>"
                                   enctype="multipart/form-data">
+                                <button   class="btn btn-block m-2 add_field_button"><i class="ion-plus"></i></button>
                                 <div class="form-group">
                                     <div class="">
                                         <div class="form-group">
                                             <label class=" form-label">Nom</label>
                                             <input type="text" id="nom" name="nom"
-                                                   value="<?= $modele->getNomModele() ?>"
+                                                   value="<?= $data['modele']['nom'] ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
@@ -50,7 +49,7 @@
                                         <div class="form-group">
                                             <label class=" form-label">Description</label>
                                             <input type="text" id="desc" name="desc"
-                                                   value="<?= $modele->getDescModele() ?>"
+                                                   value="<?= $data['modele']['desc'] ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
@@ -58,19 +57,20 @@
                                         <div class="form-group">
                                             <label class=" form-label">Prix</label>
                                             <input type="number" id="prix" name="prix"
-                                                   value="<?= $modele->getPrixModele() ?>"
+                                                   value="<?= $data['modele']['prix'] ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
 
-                                    <?php if (!empty($data_modele_comp)): ?>
+                                    <?php if (!empty($data['composition'])): ?>
                                         <fieldset id="comp">
                                             <legend>Composition du modèle</legend>
                                             <?php
-                                                foreach ($data_modele_comp as $comp):
+                                                $i=1;
+                                                foreach ($data['composition'] as $comp):
                                                     ?>
                                                     <div class="form-group row">
-                                                        <label class="form-label">Modele</label>
+                                                        <label class="form-label">Modèle <?= $i ?></label>
                                                         <div class="col-sm-12">
                                                             <select name="modeles[]" id="modeles"
                                                                     class="form-control" required>
@@ -93,16 +93,16 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                <?php endforeach; ?>
+                                                <?php $i++ ; endforeach; ?>
                                         </fieldset>
                                     <?php endif; ?>
 
-                                    <?php if (empty($data_modele_comp)): ?>
+                                    <?php if (empty($data['composition'])): ?>
                                         <div class="">
                                             <div class="form-group">
                                                 <label class=" form-label">Côut montage</label>
                                                 <input type="number" id="cout" name="cout"
-                                                       value="<?= $modele->getCoutModele() ?>"
+                                                       value="<?= $data['modele']['montage'] ?>"
                                                        class="form-control col-sm-8">
                                             </div>
                                         </div>
@@ -110,7 +110,7 @@
                                             <div class="form-group">
                                                 <label class=" form-label">Côut découpage</label>
                                                 <input type="number" id="coutd" name="coutd"
-                                                       value="<?= $modele->getCoutDecoupModele() ?>"
+                                                       value="<?=  $data['modele']['decoupage'] ?>"
                                                        class="form-control col-sm-8">
                                             </div>
                                         </div>
@@ -127,7 +127,7 @@
                                     <div class="col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <img src="<?= URL ?>/public/image/modele/<?= $modele->getRectoModele() ?>"
+                                                <img src="<?= URL ?>/public/image/modele/<?= $data['modele']['recto'] ?>"
                                                      alt="" class="img-thumbnail" width="200" height="200">
                                             </div>
                                         </div>
@@ -140,14 +140,14 @@
                                             <input type="file" id="verso" name="verso"
                                                    class="form-control col-sm-8">
                                             <input type="hidden" id="modele" name="modele"
-                                                   value="<?= $modele->getIdModele() ?>"
+                                                   value="<?= $data['modele']['id'] ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <img src="<?= URL ?>/public/image/modele/<?= $modele->getVersoModele() ?>"
+                                                <img src="<?= URL ?>/public/image/modele/<?= $data['modele']['verso'] ?>"
                                                      alt="" class="img-thumbnail" width="200" height="200">
                                             </div>
                                         </div>

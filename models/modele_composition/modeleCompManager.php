@@ -50,6 +50,18 @@ class modeleCompManager extends modelClass
             }
         }
     }
+    public function getModeleCompos($modeleId)
+    {
+        $data =[];
+        if(!empty($this->modeles)){
+            foreach ($this->modeles as $modele){
+                if($modele->getModele() === $modeleId){
+                   array_push($data, $modele);
+                }
+            }
+        }
+        return $data;
+    }
 
     public function addModeleCompBd($data_modele)
     {

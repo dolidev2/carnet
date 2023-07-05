@@ -139,20 +139,49 @@
 
         public function updateModele($id)
         {
-            $modele = $this->modeleManager->getModeleById($id);
-            $modeleComp = $this->modeleCompManager->getModeleCompById($id);
 
-            $data_modele_comp = [];
-            if (!empty($modeleComp)) {
-                $modeleCompDetails = $this->ligneCompManager->getLigneByModeleCompo($modeleComp);
-                foreach ($modeleCompDetails as $comp) {
-                    $modeleId = $this->modeleManager->getModeleById($comp->getModele());
-                    array_push($data_modele_comp, $modeleId);
+            $data = [];
+            $modele = $this->modeleManager->getModeleById($id);
+            $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
+            if (!empty($modele)){
+                $item = array(
+                    'id'=>$modele->getIdModele(),
+                    'nom'=>$modele->getNomModele(),
+                    'desc'=>$modele->getDescModele(),
+                    'recto'=>$modele->getRectoModele(),
+                    'verso'=>$modele->getVersoModele(),
+                    'prix'=>$modele->getPrixModele(),
+                    'montage'=>$modele->getCoutModele(),
+                    'decoupage'=>$modele->getCoutDecoupModele(),
+                );
+                $data['modele'] = $item;
+            }
+            elseif(!empty($modeleComposition)){
+                $item = array(
+                    'id'=>$modeleComposition->getIdModComp(),
+                    'nom'=>$modeleComposition->getNomModComp(),
+                    'desc'=>$modeleComposition->getDescModComp(),
+                    'recto'=>$modeleComposition->getRectoModComp(),
+                    'verso'=>$modeleComposition->getVersoModComp(),
+                    'prix'=>$modeleComposition->getPrixModComp(),
+                );
+                $data['modele'] = $item;
+                //Get composition modele
+                $lignecomposModele = $this->ligneCompManager->getLigneCompos($id);
+
+                //Get all modeles
+                $data_modeles = [];
+                foreach ($lignecomposModele as $comp) {
+                    $modeleUnique = $this->modeleManager->getModeleById($comp->getModele());
+                    array_push($data_modeles, $modeleUnique);
                 }
-                $modeles = $this->modeleManager->getModeles();
-                require "views/modele/update.php";
+                $data['composition'] = $data_modeles;
             }
 
+            $modeles = $this->modeleManager->getModeles();
+//            echo '<pre>';
+//                print_r($data);
+//            echo '</pre>';
             require "views/modele/update.php";
         }
 
@@ -219,16 +248,44 @@
 
         public function detailModele($id)
         {
+            $data = [];
             $modele = $this->modeleManager->getModeleById($id);
-            //Get compo modele
-            $modeleCompId = $this->modeleCompManager->getModeleComp($id);
-            $data_modele_comp = [];
-            if (!empty($modeleCompId)) {
-                foreach ($modeleCompId as $comp) {
-                    $modeleId = $this->modeleManager->getModeleById($comp['modele_comp']);
-                    array_push($data_modele_comp, $modeleId);
-                }
+            $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
+            if (!empty($modele)){
+                $item = array(
+                    'id'=>$modele->getIdModele(),
+                    'nom'=>$modele->getNomModele(),
+                    'desc'=>$modele->getDescModele(),
+                    'recto'=>$modele->getRectoModele(),
+                    'verso'=>$modele->getVersoModele(),
+                    'prix'=>$modele->getPrixModele(),
+                    'montage'=>$modele->getCoutModele(),
+                    'decoupage'=>$modele->getCoutDecoupModele(),
+                );
+                $data['modele'] = $item;
             }
+            elseif(!empty($modeleComposition)){
+                $item = array(
+                    'id'=>$modeleComposition->getIdModComp(),
+                    'nom'=>$modeleComposition->getNomModComp(),
+                    'desc'=>$modeleComposition->getDescModComp(),
+                    'recto'=>$modeleComposition->getRectoModComp(),
+                    'verso'=>$modeleComposition->getVersoModComp(),
+                    'prix'=>$modeleComposition->getPrixModComp(),
+                );
+                $data['modele'] = $item;
+                //Get composition modele
+                $lignecomposModele = $this->ligneCompManager->getLigneCompos($id);
+
+                //Get all modeles
+                $data_modeles = [];
+                foreach ($lignecomposModele as $comp) {
+                    $modeleUnique = $this->modeleManager->getModeleById($comp->getModele());
+                    array_push($data_modeles, $modeleUnique);
+                }
+                $data['composition'] = $data_modeles;
+            }
+
             require "views/modele/detail.php";
         }
 

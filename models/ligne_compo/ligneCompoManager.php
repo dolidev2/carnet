@@ -12,7 +12,7 @@ class ligneCompoManager extends modelClass{
         $this->ligneCompos[] = $ligneCompo;
     }
 
-    public function getPLigneCompos()
+    public function getLigneCompos()
     {
         return $this->ligneCompos;
     }
@@ -66,7 +66,7 @@ class ligneCompoManager extends modelClass{
         $lignes = [];
         if(!empty($this->ligneCompos)){
             foreach ($this->ligneCompos as $compo){
-                if($compo->getModele() == $modele->getIdModele()){
+                if($compo->getIdModComp() == $modele){
                     array_push($lignes,$compo);
                 }
             }

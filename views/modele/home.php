@@ -66,9 +66,9 @@
                                                     'comp' => $modele['comp']
                                                 );
                                                 ?>
-                                                <tr class="<?= $color ?>">
+                                                <tr>
                                                     <td><?= $i ?></td>
-                                                    <td><?= $modele['nom'] ?></td>
+                                                    <td class="<?= $color ?>"><?= $modele['nom'] ?></td>
                                                     <td><?= $modele['desc'] ?></td>
                                                     <td><?= $modele['prix'] ?></td>
                                                     <td><?= $modele['cout'] ?></td>
