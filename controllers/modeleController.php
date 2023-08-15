@@ -139,111 +139,104 @@
 
         public function updateModele($id)
         {
-
-            $data = [];
             $modele = $this->modeleManager->getModeleById($id);
             $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
-            if (!empty($modele)){
-                $item = array(
-                    'id'=>$modele->getIdModele(),
-                    'nom'=>$modele->getNomModele(),
-                    'desc'=>$modele->getDescModele(),
-                    'recto'=>$modele->getRectoModele(),
-                    'verso'=>$modele->getVersoModele(),
-                    'prix'=>$modele->getPrixModele(),
-                    'montage'=>$modele->getCoutModele(),
-                    'decoupage'=>$modele->getCoutDecoupModele(),
-                );
-                $data['modele'] = $item;
-            }
-            elseif(!empty($modeleComposition)){
-                $item = array(
-                    'id'=>$modeleComposition->getIdModComp(),
-                    'nom'=>$modeleComposition->getNomModComp(),
-                    'desc'=>$modeleComposition->getDescModComp(),
-                    'recto'=>$modeleComposition->getRectoModComp(),
-                    'verso'=>$modeleComposition->getVersoModComp(),
-                    'prix'=>$modeleComposition->getPrixModComp(),
-                );
-                $data['modele'] = $item;
-                //Get composition modele
-                $lignecomposModele = $this->ligneCompManager->getLigneCompos($id);
-
+            if($modele){
+                require "views/modele/update.php";
+            }elseif($modeleComposition){
                 //Get all modeles
-                $data_modeles = [];
+                $modeles = $this->modeleManager->getModeles();
+                //Get composition modele
+                $lignecomposModele = $this->ligneCompManager->getLigneByModeleCompo($id);
+                //Get all modeles
+                $CompoundModeles = [];
                 foreach ($lignecomposModele as $comp) {
                     $modeleUnique = $this->modeleManager->getModeleById($comp->getModele());
-                    array_push($data_modeles, $modeleUnique);
+                    $item = array(
+                        'id_modele'=>$modeleUnique->getIdModele(),
+                        'id_comp'=>$comp->getIdModComp()
+                    );
+
+                    array_push($CompoundModeles, $item);
                 }
-                $data['composition'] = $data_modeles;
+
+                require "views/modele/updateComposition.php";
             }
 
-            $modeles = $this->modeleManager->getModeles();
-//            echo '<pre>';
-//                print_r($data);
-//            echo '</pre>';
-            require "views/modele/update.php";
+
         }
 
         public function updateSaveModele($id)
         {
-            if (isset($_POST['modeles'][0]) && !empty($_POST['modeles'][0])) {
-                //Get compo modele
-                $modeleCompId = $this->modeleCompManager->getModeleComp($id);
-
-                //update modele
-                for ($i = 0; $i < count($_POST['modeles']); $i++) {
-                    $item = array(
-                        'creat' => date("Y-m-d"),
-                        'modele' => $this->fieldValidation($_POST['modeles'][$i]),
-                        'id' => $modeleCompId[$i]['id_mod_comp'],
-                    );
-                    $this->modeleCompManager->updateModeleCompBD($item);
-                }
-            }
             $modele = $this->modeleManager->getModeleById($id);
-            $imageOldRecto = $modele->getRectoModele();
-            $imageRecentRecto = $_FILES['recto'];
+            $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
+            if($modele){
+                var_dump('modele');
+            }
+            elseif($modeleComposition){
 
-            $imageOldVerso = $modele->getVersoModele();
-            $imageRecentVerso = $_FILES['verso'];
+                if (isset($_POST['lignes'][0]) && !empty($_POST['lignes'][0]) && isset($_POST['modeles'][0]) && !empty($_POST['modeles'][0])) {
+                    //update ligne modele composition
+                    for ($i = 0; $i < count($_POST['lignes']); $i++) {
+                        $item = array(
+                            'mod' => date("Y-m-d"),
+                            'modele' =>(int) $_POST['modeles'][$i],
+                            'id' => (int) $_POST['lignes'][$i],
+                        );
+                        $this->ligneCompManager->updateLigneCompoBD($item);
+                    }
+                    $ligne = $this->ligneCompManager->getLigneCompos();
+                    $lignes = $this->ligneCompManager->getLigneByModeleCompo($id);
+                }
 
-            if ($imageRecentRecto['size'] > 0) {
-                unlink("public/image/modele/" . $imageOldRecto);
-                $repertoire = "public/image/modele/";
-                $nomImageToAddRecto = $this->uploadImage($imageRecentRecto, $repertoire);
-            } else {
-                $nomImageToAddRecto = $imageOldRecto;
+                echo '<pre>';
+                print_r([$modeleComposition->getIdModComp(),$lignes]);
+                echo '</pre>';
             }
 
-            if ($imageRecentVerso['size'] > 0) {
-                unlink("public/image/modele/" . $imageOldVerso);
-                $repertoire = "public/image/modele/";
-                $nomImageToAddVerso = $this->uploadImage($imageRecentVerso, $repertoire);
-            } else {
-                $nomImageToAddVerso = $imageOldVerso;
-            }
-
-            $data = array(
-                'nom' => $this->fieldValidation($_POST['nom']),
-                'desc' => $this->fieldValidation($_POST['desc']),
-                'recto' => $nomImageToAddRecto,
-                'verso' => $nomImageToAddVerso,
-                'mod' => date("Y-m-d"),
-                'prix' => $this->fieldValidation($_POST['prix']),
-                'cout' => $this->fieldValidation($_POST['cout']),
-                'cout_decoup' => $this->fieldValidation($_POST['coutd']),
-                'id' => $id
-            );
-            $this->modeleManager->updateModeleBD($data);
-            $audit = array(
-                'desc' => "Modification du  modèle: " . $data['nom'] . ' description ' . $data['desc'] . ' prix ' . $data['prix'],
-                'action' => 'Modification',
-                'creat' => date("Y-m-d"),
-                'user' => $_SESSION['id'],
-            );
-            $this->auditManager->addAuditBd($audit);
-            header('location: ' . URL . 'modele');
+//            $modele = $this->modeleManager->getModeleById($id);
+//            $imageOldRecto = $modele->getRectoModele();
+//            $imageRecentRecto = $_FILES['recto'];
+//
+//            $imageOldVerso = $modele->getVersoModele();
+//            $imageRecentVerso = $_FILES['verso'];
+//
+//            if ($imageRecentRecto['size'] > 0) {
+//                unlink("public/image/modele/" . $imageOldRecto);
+//                $repertoire = "public/image/modele/";
+//                $nomImageToAddRecto = $this->uploadImage($imageRecentRecto, $repertoire);
+//            } else {
+//                $nomImageToAddRecto = $imageOldRecto;
+//            }
+//
+//            if ($imageRecentVerso['size'] > 0) {
+//                unlink("public/image/modele/" . $imageOldVerso);
+//                $repertoire = "public/image/modele/";
+//                $nomImageToAddVerso = $this->uploadImage($imageRecentVerso, $repertoire);
+//            } else {
+//                $nomImageToAddVerso = $imageOldVerso;
+//            }
+//
+//            $data = array(
+//                'nom' => $this->fieldValidation($_POST['nom']),
+//                'desc' => $this->fieldValidation($_POST['desc']),
+//                'recto' => $nomImageToAddRecto,
+//                'verso' => $nomImageToAddVerso,
+//                'mod' => date("Y-m-d"),
+//                'prix' => $this->fieldValidation($_POST['prix']),
+//                'cout' => $this->fieldValidation($_POST['cout']),
+//                'cout_decoup' => $this->fieldValidation($_POST['coutd']),
+//                'id' => $id
+//            );
+//            $this->modeleManager->updateModeleBD($data);
+//            $audit = array(
+//                'desc' => "Modification du  modèle: " . $data['nom'] . ' description ' . $data['desc'] . ' prix ' . $data['prix'],
+//                'action' => 'Modification',
+//                'creat' => date("Y-m-d"),
+//                'user' => $_SESSION['id'],
+//            );
+//            $this->auditManager->addAuditBd($audit);
+//            header('location: ' . URL . 'modele');
         }
 
         public function detailModele($id)

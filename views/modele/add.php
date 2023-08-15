@@ -34,7 +34,7 @@ ob_start();
                         <div class="card-block">
                             <h4 class="sub-title">Ajouter un modèle</h4>
                             <form id="form-add-modele" method="post" action="<?= URL ?>modele/av" enctype="multipart/form-data">
-                                <button   class="btn btn-block m-2 add_field_button"><i class="ion-plus"></i></button>
+                                <button   class="btn bg-dark-primary btn-block m-2 add_field_button"><i class="ion-plus"></i></button>
                                 <div class="form-group row">
                                     <div class="col-sm-6 ">
                                         <div class="form-group">

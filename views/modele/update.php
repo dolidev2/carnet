@@ -18,7 +18,7 @@
                     </li>
                     <li class="breadcrumb-item"><a href="<?= URL ?>modele">Modèle</a>
                     </li>
-                    <li class="breadcrumb-item"><a href="<?= URL ?>modele/modifier/<?= $data['modele']['id'] ?>">Modifier</a>
+                    <li class="breadcrumb-item"><a href="<?= URL ?>modele/modifier/<?=$modele->getIdModele() ?>">Modifier</a>
                     </li>
                 </ul>
             </div>
@@ -33,7 +33,7 @@
                     <div class="card">
                         <div class="card-block">
                             <h4 class="sub-title"></h4>
-                            <form method="post" action="<?= URL ?>modele/mv/<?= $data['modele']['id'] ?>"
+                            <form method="post" action="<?= URL ?>modele/mv/<?= $modele->getIdModele() ?>"
                                   enctype="multipart/form-data">
                                 <button   class="btn btn-block m-2 add_field_button"><i class="ion-plus"></i></button>
                                 <div class="form-group">
@@ -41,7 +41,7 @@
                                         <div class="form-group">
                                             <label class=" form-label">Nom</label>
                                             <input type="text" id="nom" name="nom"
-                                                   value="<?= $data['modele']['nom'] ?>"
+                                                   value="<?=$modele->getNomModele() ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
@@ -49,7 +49,7 @@
                                         <div class="form-group">
                                             <label class=" form-label">Description</label>
                                             <input type="text" id="desc" name="desc"
-                                                   value="<?= $data['modele']['desc'] ?>"
+                                                   value="<?= $modele->getDescModele() ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
@@ -57,64 +57,26 @@
                                         <div class="form-group">
                                             <label class=" form-label">Prix</label>
                                             <input type="number" id="prix" name="prix"
-                                                   value="<?= $data['modele']['prix'] ?>"
+                                                   value="<?= $modele->getPrixModele() ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
-
-                                    <?php if (!empty($data['composition'])): ?>
-                                        <fieldset id="comp">
-                                            <legend>Composition du modèle</legend>
-                                            <?php
-                                                $i=1;
-                                                foreach ($data['composition'] as $comp):
-                                                    ?>
-                                                    <div class="form-group row">
-                                                        <label class="form-label">Modèle <?= $i ?></label>
-                                                        <div class="col-sm-12">
-                                                            <select name="modeles[]" id="modeles"
-                                                                    class="form-control" required>
-                                                                <?php if (!empty($modeles)):
-                                                                    foreach ($modeles as $modele):
-                                                                        if ($comp->getIdModele() == $modele->getIdModele()):
-                                                                            ?>
-                                                                            <option value="<?= $modele->getIdModele() ?>"
-                                                                                    selected>
-                                                                                <?= $modele->getNomModele() . ' <=> ' . $modele->getDescModele() . ' <=> ' . $modele->getPrixModele() ?>
-                                                                            </option>
-                                                                        <?php endif; ?>
-                                                                        <option value="<?= $modele->getIdModele() ?>">
-                                                                            <?= $modele->getNomModele() . ' <=> ' . $modele->getDescModele() . ' <=> ' . $modele->getPrixModele() ?>
-                                                                        </option>
-                                                                    <?php
-                                                                    endforeach;
-                                                                endif;
-                                                                ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                <?php $i++ ; endforeach; ?>
-                                        </fieldset>
-                                    <?php endif; ?>
-
-                                    <?php if (empty($data['composition'])): ?>
-                                        <div class="">
-                                            <div class="form-group">
-                                                <label class=" form-label">Côut montage</label>
-                                                <input type="number" id="cout" name="cout"
-                                                       value="<?= $data['modele']['montage'] ?>"
-                                                       class="form-control col-sm-8">
-                                            </div>
+                                    <div class="">
+                                        <div class="form-group">
+                                            <label class=" form-label">Côut montage</label>
+                                            <input type="number" id="cout" name="cout"
+                                                   value="<?= $modele->getCoutModele() ?>"
+                                                   class="form-control col-sm-8">
                                         </div>
+                                    </div>
                                         <div class="">
                                             <div class="form-group">
                                                 <label class=" form-label">Côut découpage</label>
                                                 <input type="number" id="coutd" name="coutd"
-                                                       value="<?=  $data['modele']['decoupage'] ?>"
+                                                       value="<?=  $modele->getCoutDecoupModele() ?>"
                                                        class="form-control col-sm-8">
                                             </div>
                                         </div>
-                                    <?php endif ?>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6">
@@ -127,7 +89,7 @@
                                     <div class="col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <img src="<?= URL ?>/public/image/modele/<?= $data['modele']['recto'] ?>"
+                                                <img src="<?= URL ?>/public/image/modele/<?= $modele->getRectoModele() ?>"
                                                      alt="" class="img-thumbnail" width="200" height="200">
                                             </div>
                                         </div>
@@ -140,14 +102,14 @@
                                             <input type="file" id="verso" name="verso"
                                                    class="form-control col-sm-8">
                                             <input type="hidden" id="modele" name="modele"
-                                                   value="<?= $data['modele']['id'] ?>"
+                                                   value="<?= $modele->getIdModele() ?>"
                                                    class="form-control col-sm-8">
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <img src="<?= URL ?>/public/image/modele/<?= $data['modele']['verso'] ?>"
+                                                <img src="<?= URL ?>/public/image/modele/<?= $modele->getVersoModele() ?>"
                                                      alt="" class="img-thumbnail" width="200" height="200">
                                             </div>
                                         </div>

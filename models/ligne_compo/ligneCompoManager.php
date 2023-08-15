@@ -41,7 +41,7 @@ class ligneCompoManager extends modelClass{
     {
         if(!empty($this->ligneCompos)){
             foreach ($this->ligneCompos as $ligne){
-                if($ligne->getIdModComp() === $id){
+                if($ligne->getIdModComp() == $id){
                     return $ligne;
                 }
             }
@@ -53,7 +53,7 @@ class ligneCompoManager extends modelClass{
         $lignes = [];
         if(!empty($this->ligneCompos)){
             foreach ($this->ligneCompos as $compo){
-                if($compo->getModeleComp() === $modCompo->getIdModComp()){
+                if($compo->getModeleComp() === $modCompo){
                     array_push($lignes,$compo);
                 }
             }
@@ -90,6 +90,22 @@ class ligneCompoManager extends modelClass{
             $data['id'] = $this->getBdd()->lastInsertId();
             $modele = new ligneModeleCompClass($data);
             $this->addLigneCompo($modele);
+        }
+    }
+
+    public function updateLigneCompoBD($data_modele)
+    {
+        $query = "UPDATE ligne_compo SET modele=:modele, mod_comp=:mod WHERE id_mod_comp=:id ";
+        $stmt = $this->getBdd()->prepare($query);
+        $stmt->bindValue(":modele",$data_modele['modele']);
+        $stmt->bindValue(":mod",$data_modele['mod']);
+        $stmt->bindValue(":id",$data_modele['id']);
+        $result = $stmt->execute();
+        $stmt->closeCursor();
+
+        if($result >0 ){
+            $this->getLigneById($data_modele['id'])->setModele($data_modele['modele']);
+            $this->getLigneById($data_modele['id'])->setMod($data_modele['mod']);
         }
     }
 

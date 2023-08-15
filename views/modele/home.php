@@ -85,7 +85,7 @@
                                                              data-target="#large-modal<?= 'a' . $modele['id'] . '' . $i ?>"/>
                                                     </td>
                                                     <td>
-                                                        <a href="<?= URL ?>/modele/modifier/<?= $modele['id'] ?>">
+                                                        <a href="<?= URL ?>modele/modifier/<?= $modele['id'] ?>">
                                                             <button class="btn btn-success btn-md text-light"><i
                                                                         class="icofont icofont-pencil-alt-5"></i>
                                                             </button>

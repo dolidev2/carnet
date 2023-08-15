@@ -39,12 +39,7 @@
 <script src="<?= URL ?>public/assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
 <script src="<?= URL ?>public/assets/js/jquery.mousewheel.min.js"></script>
 
-<!--<script>-->
-<!---->
-<!--setTimeout(function () {    -->
-<!--    window.location.href ="--><?//= URL ?>//unlogin";
-//},900000); // 15 minutes
-//</script>
+
 <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
 
 
