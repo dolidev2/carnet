@@ -44,43 +44,39 @@ ob_start();
     </header>
 
     <main>
-    <?php if(!empty($programmes)): ?>
+    <?php if(!empty($data)): ?>
     <h1>TENUES TERMINEES</h1>
         <table>
             <thead>
             <tr>
                 <th colspan="2" class="desc">DESCRIPTION</th>
                 <th>QUANTITE</th>
-                <th>STATUT</th>
             </tr>
             </thead>
             <tbody>
-                <?php foreach ($programmes as $p): ?>
+                <?php foreach ($data as $p): ?>
                     <tr>
-                        <td colspan="2" class="desc"><?= $p['nom_modele'].' - '.$p['nom_tissu'] ?></td>
-                        <td class="unit"><?=$p['quantite_cmt'] ?></td>
-                        <td class="total">TERMINE</td>
+                        <td colspan="2" class="desc"><?=strtoupper($p['modele']).' - '. strtoupper($p['tissu']) ?></td>
+                        <td class="unit"><?=$p['qte'] ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
         <?php endif;
-            if(!empty($programmesCours)): ?>
+            if(!empty($dataEnCours)): ?>
             <h1>TENUES EN COURS</h1>
             <table>
                 <thead>
                 <tr>
                     <th colspan="2" class="desc">DESCRIPTION</th>
                     <th>QUANTITE</th>
-                    <th>STATUT</th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($programmesCours as $p): ?>
+                <?php foreach ($dataEnCours as $p): ?>
                     <tr>
-                        <td colspan="2" class="desc"><?= $p['nom_modele'].' - '.$p['nom_tissu'] ?></td>
-                        <td class="unit"><?=$p['quantite_cmt'] ?></td>
-                        <td class="total">EN COURS</td>
+                        <td colspan="2" class="desc"><?= strtoupper($p['modele']).' - '. strtoupper($p['tissu']) ?></td>
+                        <td class="unit"><?=$p['qte'] ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

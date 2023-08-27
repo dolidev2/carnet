@@ -207,6 +207,20 @@ class commandeClientManager extends modelClass
         return $result;
     }
 
+    public function loadCommandeDetailComposition($id)
+    {
+        $query ="SELECT * FROM commande c, commande_modele_tissu cmt ,modele_composition m, tissu t
+                 WHERE c.id_commande = cmt.commande AND cmt.modele=m.id_mod_comp AND t.id_tissu=cmt.tissu
+                 AND c.id_commande =:commande";
+        $stmt = $this->getBdd()->prepare($query);
+        $stmt->bindValue(":commande",$id);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $result;
+    }
+
     public function loadCoutTotalCouture($id)
     {
         $query ="SELECT SUM(cmt.prix_cmt) as somme  FROM commande c, commande_modele_tissu cmt

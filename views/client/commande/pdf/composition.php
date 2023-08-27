@@ -52,10 +52,10 @@ ob_start();
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($programmes as $p): ?>
+            <?php foreach ($data as $p): ?>
                 <tr>
-                    <td colspan="2" class="desc"><?= $p['nom_modele'] ?></td>
-                    <td class="unit"><?=$p['quantite_cmt'] ?></td>
+                    <td colspan="2" class="desc"><?= strtoupper($p['nom_modele'])?></td>
+                    <td class="unit"><?=$p['qte'] ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

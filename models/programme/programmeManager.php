@@ -321,9 +321,11 @@ class programmeManager extends modelClass
 
         return $result;
     }
+
     public function getProgrammesCommandeAndStatut($commande, $statut)
     {
-        $query = "SELECT m.nom_modele,t.nom_tissu, cmt.quantite_cmt  FROM commande c, commande_modele_tissu cmt , client cl, modele m, tissu t 
+        $query = "SELECT m.nom_modele,t.nom_tissu, cmt.quantite_cmt  
+                  FROM commande c, commande_modele_tissu cmt , client cl, modele m, tissu t 
                   WHERE cmt.commande=c.id_commande AND c.client=cl.id_client AND cmt.modele=m.id_modele 
                   AND t.id_tissu = cmt.tissu AND c.id_commande=:commande AND cmt.statut_cmt =:statut";
         $stmt = $this->getBdd()->prepare($query);
@@ -335,6 +337,22 @@ class programmeManager extends modelClass
 
         return $result;
    }
+
+    public function getProgrammesCommandeAndStatutComposition($commande, $statut)
+    {
+        $query = "SELECT m.nom_mod_comp,t.nom_tissu, cmt.quantite_cmt  
+                  FROM commande c, commande_modele_tissu cmt , client cl, modele_composition m, tissu t 
+                  WHERE cmt.commande=c.id_commande AND c.client=cl.id_client AND cmt.modele=m.id_mod_comp 
+                  AND t.id_tissu = cmt.tissu AND c.id_commande=:commande AND cmt.statut_cmt =:statut";
+        $stmt = $this->getBdd()->prepare($query);
+        $stmt->bindValue(":commande",$commande);
+        $stmt->bindValue(":statut",$statut);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return $result;
+    }
 
     public function getProgrammesPersonnel($commande)
     {
@@ -367,7 +385,6 @@ class programmeManager extends modelClass
 
         return $result;
     }
-
 
     public function getCommandeRdvDetail($agence)
     {

@@ -90,6 +90,15 @@ ob_start(); ?>
                                                     <?php
                                                     endforeach;
                                                 endif;
+                                                if(!empty($compoModeles)):
+                                                    foreach ($compoModeles as $modele):
+                                                        ?>
+                                                        <option value="<?= $modele->getIdModComp() ?>">
+                                                            <?= $modele->getNomModComp().' <=> '. $modele->getDescModComp().' <=> '.$modele->getPrixModComp() ?>
+                                                        </option>
+                                                    <?php
+                                                    endforeach;
+                                                endif;
                                                 ?>
                                             </select>
                                         </div>
@@ -168,17 +177,27 @@ ob_start();
                             <label class="form-label">Modele</label>
                             <div class="">
                                 <select name="modele[]"  id="modeles" class="form-control">
-                                <?php
-                    if(!empty($modeles)):
-                    foreach ($modeles as $modele):
-                    ?>
-                                        <option value="<?= $modele->getIdModele() ?>">
-                                            <?= $modele->getNomModele().' <=> '. $modele->getDescModele().' <=> '.$modele->getPrixModele() ?>
-                                        </option>
-                                <?php
-                    endforeach;
-                    endif;
-                    ?>
+                                    <?php
+                                    if(!empty($modeles)):
+                                        foreach ($modeles as $modele):
+                                        ?>
+                                            <option value="<?= $modele->getIdModele() ?>">
+                                                <?= $modele->getNomModele().' <=> '. $modele->getDescModele().' <=> '.$modele->getPrixModele() ?>
+                                            </option>
+                                                    <?php
+                                        endforeach;
+                                    endif;
+                                    if(!empty($compoModeles)):
+                                        foreach ($compoModeles as $modele):
+                                        ?>
+                                            <option value="<?= $modele->getIdModComp() ?>">
+                                                <?= $modele->getNomModComp().' <=> '. $modele->getDescModComp().' <=> '.$modele->getPrixModComp() ?>
+                                            </option>
+                                        <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -188,19 +207,19 @@ ob_start();
                             <div class="">
                                 <select name="tissu[]" id="tissus" class="form-control">
                                     <?php
-                    if(!empty($tissus)):
-                    foreach ($tissus as $tissu):
-                    ?>
-                      <option value="">
-                            ----------------------------
-                        </option>
-                                        <option value="<?= $tissu->getIdTissu() ?>">
-                                            <?= $tissu->getNomTissu().' <=> '.$tissu->getDescTissu() ?>
-                                        </option>
-                                    <?php
-                    endforeach;
-                    endif;
-                    ?>
+                                    if(!empty($tissus)):
+                                        foreach ($tissus as $tissu):
+                                        ?>
+                                          <option value="">
+                                                ----------------------------
+                                            </option>
+                                            <option value="<?= $tissu->getIdTissu() ?>">
+                                                <?= $tissu->getNomTissu().' <=> '.$tissu->getDescTissu() ?>
+                                            </option>
+                                        <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
                                 </select>
                             </div>
                         </div>

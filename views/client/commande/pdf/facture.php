@@ -89,7 +89,7 @@ ob_start();
                             <tr> <td colspan="5"  class="unit" style="text-align: center; text-decoration: underline;">COUTURE</td></tr>
                         <?php endif; ?>
                         <tr>
-                            <td class="desc"><?= $cmd['modele'] ?></td>
+                            <td class="desc"><?= strtoupper($cmd['modele']) ?></td>
                             <td class="unit"><?= $cmd['prix'] ?></td>
                             <td class="qty"><?= $cmd['qte'] ?></td>
                             <td class="qty"><?= $remise ?></td>
@@ -108,7 +108,7 @@ ob_start();
                                    <?php
                                    foreach ($cmd['charge'] as $charge):  ?>
                                        <tr>
-                                           <td class="desc" ><?= $charge['ressource'] ?></td>
+                                           <td class="desc" ><?=strtoupper($charge['ressource']) ?></td>
                                            <td class="unit"><?= $charge['prix'] ?></td>
                                            <td class="qty"></td>
                                            <td class="qty"></td>

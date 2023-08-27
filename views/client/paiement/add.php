@@ -29,98 +29,98 @@ ob_start();
         <!-- Page body start -->
         <div class="page-body">
             <div class="row">
-                <div class="col-md-4 col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <!-- Basic Form Inputs card start -->
-                            <div class="card">
-                                <div class="card-block">
-                                    <h4 class="sub-title">Info Client</h4>
-                                    <div class="row">
-                                        <div class="form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Nom</label>
-                                            <input type="text" class="form-control" value="<?= $client->getNomClient()?>" readonly>
-                                        </div>
-                                        <div class=" form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Prénom</label>
-                                            <input type="text"  class="form-control" value="<?= $client->getPrenomClient()?>" readonly>
-                                        </div>
-                                        <div class="form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Numéro mesure</label>
-                                            <input type="text" class="form-control" value="<?= $client->getNumeroMesure()?>" readonly>
-                                        </div>
-                                        <div class=" form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Type</label>
-                                            <input type="text"  class="form-control" value="<?= $client->getTypeClient()?>" readonly>
-                                        </div>
-                                        <div class="form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Contact</label>
-                                            <input type="text" class="form-control" value="<?= $client->getContactClient()?>" readonly>
-                                        </div>
-                                        <div class="form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Adresse</label>
-                                            <input type="text"  class="form-control" value="<?= $client->getAdresseClient()?>" readonly>
-                                        </div>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <h4 class="sub-title">Info Client</h4>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-control ">
+                                        <label class="col-form-label">Nom</label>
+                                        <input type="text" class="form-control" value="<?= $client->getNomClient()?>" readonly>
+                                    </div>
+                                    <div class=" form-control ">
+                                        <label class="col-form-label">Prénom</label>
+                                        <input type="text"  class="form-control" value="<?= $client->getPrenomClient()?>" readonly>
+                                    </div>
+                                    <div class="form-control ">
+                                        <label class="col-form-label">Numéro mesure</label>
+                                        <input type="text" class="form-control" value="<?= $client->getNumeroMesure()?>" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class=" form-control ">
+                                        <label class="col-form-label">Type</label>
+                                        <input type="text"  class="form-control" value="<?= $client->getTypeClient()?>" readonly>
+                                    </div>
+                                    <div class="form-control ">
+                                        <label class="col-form-label">Contact</label>
+                                        <input type="text" class="form-control" value="<?= $client->getContactClient()?>" readonly>
+                                    </div>
+                                    <div class="form-control ">
+                                        <label class="col-form-label">Adresse</label>
+                                        <input type="text"  class="form-control" value="<?= $client->getAdresseClient()?>" readonly>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <!-- Basic Form Inputs card start -->
-                            <div class="card">
-                                <div class="card-block">
-                                    <h4 class="sub-title">Info Commande</h4>
-                                    <div class="row">
-                                        <div class="form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Description</label>
-                                            <input type="text" class="form-control" value="<?= $commande->getDescCommande()?>" readonly>
-                                        </div>
-                                        <div class=" form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Date de création</label>
-                                            <input type="text"  class="form-control" value="<?=date("d-m-Y",strtotime($commande->getCreatCommande())) ?>" readonly>
-                                        </div>
-                                        <div class="form-control col-sm-12 col-md-6">
-                                            <label class="col-form-label">Date de RDV</label>
-                                            <input type="text" class="form-control" value="<?= date("d-m-Y",strtotime($commande->getRdvCommande()))?>" readonly>
-                                        </div>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <h4 class="sub-title">Info Commande</h4>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-control">
+                                        <label class="col-form-label">Description</label>
+                                        <input type="text" class="form-control" value="<?= $commande->getDescCommande()?>" readonly>
+                                    </div>
+                                    <div class=" form-control">
+                                        <label class="col-form-label">Date de création</label>
+                                        <input type="text"  class="form-control" value="<?=date("d-m-Y",strtotime($commande->getCreatCommande())) ?>" readonly>
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="col-form-label">Date de RDV</label>
+                                        <input type="text" class="form-control" value="<?= date("d-m-Y",strtotime($commande->getRdvCommande()))?>" readonly>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <!-- Basic Form Inputs card start -->
-                            <div class="card">
-                                <div class="card-block">
-                                    <h4 class="sub-title">Info Commande Articles</h4>
-                                    <?php foreach ($data as $dt): ?>
-                                    <div class="row">
-                                        <div class=" form-control col-md-6 col-sm-12">
-                                            <label class="col-form-label">Modele</label>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <h4 class="sub-title">Info Commande Articles</h4>
+                            <?php foreach ($data as $dt): ?>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class=" form-control">
+                                            <label class="col-form-label">Modèle</label>
                                             <input type="text" class="form-control" value="<?= $dt['modele_nom'].' <=> '.$dt['modele_prix'] ?>" readonly>
                                         </div>
-                                        <div class=" form-control col-md-6 col-sm-12">
-                                            <label class="col-form-label">Tissu</label>
-                                            <input type="text" class="form-control" value="<?= $dt['tissu']?>" readonly>
-                                        </div>
                                     </div>
-                                    <?php endforeach;
-                                    if($somme == 0): ?>
-                                        <button class="btn btn-danger btn-block mt-3 ">Soldé</button>
-                                    <?php elseif($somme > 0): ?>
-                                        <button class="btn btn-success btn-block mt-3 ">Reste: <?= $somme ?> FCFA</button>
-                                    <?php else: ?>
-                                        <button class="btn btn-danger btn-block mt-3 ">Avoir: <?= $somme ?> FCFA</button>
-                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach;
+                            ?>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class=" form-control">
+                                        <label class="col-form-label">Remise</label>
+                                        <button class="btn btn-info btn-block mt-3 "><?= $remise ?> F CFA</button>
+<!--                                        <input type="text" class="form-control" value="--><?//= $remise ?><!--" readonly>-->
+                                    </div>
                                 </div>
                             </div>
+                            <?php
+                                if($somme == 0): ?>
+                                    <button class="btn btn-danger btn-block mt-3 ">Soldé</button>
+                                <?php elseif($somme > 0): ?>
+                                    <button class="btn btn-success btn-block mt-3 ">Reste: <?= $somme ?> FCFA</button>
+                                <?php else: ?>
+                                    <button class="btn btn-danger btn-block mt-3 ">Avoir: <?= $somme ?> FCFA</button>
+                                <?php endif; ?>
                         </div>
                     </div>
                 </div>

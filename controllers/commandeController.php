@@ -116,8 +116,45 @@ class commandeController
         $commande = $this->commandeManager->getCommandeById($id);
         $client = $this->clientManager->getClientById($commande->getClient());
         $programmes = $this->programmeManager->getProgrammesCommandeAndStatut($commande->getIdCommande(),1);
-        $programmesCours = $this->programmeManager->getProgrammesCommandeAndStatut($commande->getIdCommande(),0);
+        $programmesCompo = $this->programmeManager->getProgrammesCommandeAndStatutComposition($commande->getIdCommande(),1);
 
+        $data = [];
+        foreach ($programmes as $item){
+            $array = array(
+                'modele'=> $item['nom_modele'],
+                'tissu'=> $item['nom_tissu'],
+                'qte'=> $item['quantite_cmt'],
+            );
+            array_push($data, $array);
+        }
+        foreach ($programmesCompo as $item){
+            $array = array(
+                'modele'=> $item['nom_mod_comp'],
+                'tissu'=> $item['nom_tissu'],
+                'qte'=> $item['quantite_cmt'],
+            );
+            array_push($data, $array);
+        }
+
+        $programmesCours = $this->programmeManager->getProgrammesCommandeAndStatut($commande->getIdCommande(),0);
+        $programmesCoursCompo = $this->programmeManager->getProgrammesCommandeAndStatutComposition($commande->getIdCommande(),0);
+        $dataEnCours = [];
+        foreach ($programmesCours as $item){
+            $array = array(
+                'modele'=> $item['nom_modele'],
+                'tissu'=> $item['nom_tissu'],
+                'qte'=> $item['quantite_cmt'],
+            );
+            array_push($dataEnCours, $array);
+        }
+        foreach ($programmesCoursCompo as $item){
+            $array = array(
+                'modele'=> $item['nom_mod_comp'],
+                'tissu'=> $item['nom_tissu'],
+                'qte'=> $item['quantite_cmt'],
+            );
+            array_push($dataEnCours, $array);
+        }
         $user = $this->userManager->getUserById($_SESSION['id']);
         $agence = $this->agenceManager->getAgenceById($_SESSION['agence']);
         require "views/client/commande/pdf/article.php";
@@ -127,8 +164,20 @@ class commandeController
     {
         $commande = $this->commandeManager->getCommandeById($id);
         $client = $this->clientManager->getClientById($commande->getClient());
-        $programmes = $this->programmeManager->getProgrammesPersonnel($commande->getIdCommande());
+        $programmes =$this->programmeManager->getProgrammesCommande($commande);
+        $data = [];
+        foreach ($programmes as $programme){
+            //Modele simple & composition
+            $simpleModele = $this->modeleManager->getModeleById($programme->getModele());
+            $compoModele = $this->modeleCompoManager->getModeleCompById($programme->getModele());
 
+            $item = array(
+                'nom_modele'=>(!empty( $simpleModele))? $simpleModele->getNomModele():$compoModele->getNomModComp(),
+                'qte'=>$programme->getQuantiteCmt()
+            );
+
+            array_push($data,$item);
+        }
         $user = $this->userManager->getUserById($_SESSION['id']);
         $agence = $this->agenceManager->getAgenceById($_SESSION['agence']);
         require "views/client/commande/pdf/composition.php";
@@ -173,6 +222,7 @@ class commandeController
             }
         }
         $modeles = $this->modeleManager->getModeles();
+        $compoModeles = $this->modeleCompoManager->getModelesComp();
         require "views/client/commande/affect.php";
 
     }
@@ -219,7 +269,6 @@ class commandeController
                 $modele = $this->modeleManager->getModeleById($_POST['modele'][$i]);
                 $modeleComposition = $this->modeleCompoManager->getModeleCompById($_POST['modele'][$i]);
                 if($modele){
-
                     $nom_modele = $modele->getNomModele();
                     $prix_modele = $modele->getPrixModele();
 
@@ -278,17 +327,29 @@ class commandeController
         $client = $this->clientManager->getClientById($commande->getClient());
         $programmes = $this->programmeManager->getProgrammesCommande($commande);
         $modeles = $this->modeleManager->getModeles();
+        $modelesComp = $this->modeleCompoManager->getModelesComp();
         $tissus = $this->tissuManager->getTissusClient($client);
         $data = [];
         foreach ($programmes as $programme){
-            $modeleProg = $this->modeleManager->getModeleById($programme->getModele());
+            $simpleModele =  $this->modeleManager->getModeleById($programme->getModele());
+            $compoModele =  $this->modeleCompoManager->getModeleCompById($programme->getModele());
+            if(!empty($simpleModele)){
+                $idModele = $simpleModele->getIdModele();
+                $nomModele = $simpleModele->getNomModele();
+                $prixModele = $simpleModele->getPrixModele();
+            }
+            if(!empty($compoModele)){
+                $idModele = $compoModele->getIdModComp();
+                $nomModele = $compoModele->getNomModComp();
+                $prixModele = $compoModele->getPrixModComp();
+            }
             $tissuProg = $this->tissuManager->getTissuById($programme->getTissu());
 
             $item = array(
                 'id'=>$programme->getIdCmt(),
-                'modele_id'=>$modeleProg->getIdModele(),
-                'modele_nom'=>$modeleProg->getNomModele(),
-                'modele_prix'=>$modeleProg->getPrixModele(),
+                'modele_id'=>$idModele,
+                'modele_nom'=>$nomModele,
+                'modele_prix'=>$prixModele,
                 'statut'=>$programme->getStatutCmt(),
                 'tissu_id'=>$tissuProg->getIdTissu(),
                 'tissu'=>$tissuProg->getNomTissu(),
@@ -325,18 +386,26 @@ class commandeController
     }
     public function updateSaveProgramme($id)
     {
-        // echo '<pre>';
-        //     print_r($_POST);
-        // echo '</pre>';
+
         $client = $this->clientManager->getClientById($this->commandeManager->getCommandeById($id)->getClient());
         if(!empty($_POST['modele']) && !empty($_POST['tissu']) && !empty($_POST['quantite']) && !empty($_POST['prix']) && !empty($_POST['statut']) ){
             for($i=0;$i < count($_POST['id_cmt']);$i++ ){
-                
-                $prog = $this->programmeManager->getProgrammeById($this->fieldValidation($_POST['id_cmt'][$i]));
-                $modele = $this->modeleManager->getModeleById($this->fieldValidation($_POST['modele'][$i]));
-                $remise = ($this->fieldValidation($_POST['remise'][$i]) == $prog->getRemiseCmt())? $prog->getRemiseCmt() : ($this->fieldValidation($_POST['remise'][$i]) * $this->fieldValidation($_POST['quantite'][$i])) ;
-                $prix = ($modele->getPrixModele()*$this->fieldValidation($_POST['quantite'][$i]));
 
+                $prog = $this->programmeManager->getProgrammeById($this->fieldValidation($_POST['id_cmt'][$i]));
+                //modele simple & composition
+                $simpleModele = $this->modeleManager->getModeleById($this->fieldValidation($_POST['modele'][$i]));
+                $compoModele = $this->modeleCompoManager->getModeleCompById($this->fieldValidation($_POST['modele'][$i]));
+                if (!empty($simpleModele))
+                {
+                    $prix = $simpleModele->getPrixModele()*$this->fieldValidation($_POST['quantite'][$i]);
+                    $nomModele = $simpleModele->getNomModele();
+                }
+                if ( !empty($compoModele))
+                {
+                    $prix = $compoModele->getPrixModComp()*$this->fieldValidation($_POST['quantite'][$i]);
+                    $nomModele = $compoModele->getNomModComp();
+                }
+                $remise = ($this->fieldValidation($_POST['remise'][$i]) == $prog->getRemiseCmt())? $prog->getRemiseCmt() : ($this->fieldValidation($_POST['remise'][$i]) * $this->fieldValidation($_POST['quantite'][$i])) ;
 
                 $data = array(
                     'id' => $this->fieldValidation($_POST['id_cmt'][$i]),
@@ -351,10 +420,10 @@ class commandeController
                 );
                 $this->programmeManager->updateProgrammeBD($data);
                 $tissu =$this->tissuManager->getTissuById($data['tissu']);
-                $modele =$this->modeleManager->getModeleById($data['modele']);
                 $commande =$this->commandeManager->getCommandeById($data['commande']);
+
                 $audit = array(
-                    'desc'=> "Modification de l'article avec le tissu ".$tissu->getNomTissu()." ".$tissu->getDescTissu() ." au modèle : ".$modele->getNomModele()." dans la commande ".$commande->getDescCommande(),
+                    'desc'=> "Modification de l'article avec le tissu ".$tissu->getNomTissu()." ".$tissu->getDescTissu() ." au modèle : ".$nomModele." dans la commande ".$commande->getDescCommande(),
                     'action'=>'Modification',
                     'creat'=>date("Y-m-d"),
                     'user'=>$_SESSION['id'],
@@ -372,14 +441,16 @@ class commandeController
         $programmes =$this->programmeManager->getProgrammesCommande($commande);
         $data = [];
         foreach ($programmes as $programme){
-            $modeleProg = $this->modeleManager->getModeleById($programme->getModele());
-            $tissuProg = $this->tissuManager->getTissuById($programme->getTissu());
+            //Modele simple & composition
+            $simpleModele = $this->modeleManager->getModeleById($programme->getModele());
+            $compoModele = $this->modeleCompoManager->getModeleCompById($programme->getModele());
 
+            $tissuProg = $this->tissuManager->getTissuById($programme->getTissu());
             $item = array(
                 'id'=>$programme->getIdCmt(),
-                'modele_id'=>$modeleProg->getIdModele(),
-                'modele_nom'=>$modeleProg->getNomModele(),
-                'modele_prix'=>$modeleProg->getPrixModele(),
+                'modele_id'=> (!empty( $simpleModele))? $simpleModele->getIdModele():$compoModele->getIdModComp(),
+                'modele_nom'=>(!empty( $simpleModele))? $simpleModele->getNomModele():$compoModele->getNomModComp(),
+                'modele_prix'=>(!empty( $simpleModele))? $simpleModele->getPrixModele():$compoModele->getPrixModComp(),
                 'statut'=>$programme->getStatutCmt(),
                 'tissu_id'=>$tissuProg->getIdTissu(),
                 'tissu'=>$tissuProg->getNomTissu(),
@@ -387,6 +458,7 @@ class commandeController
                 'prix'=>$programme->getPrixCmt(),
                 'qte'=>$programme->getQuantiteCmt()
             );
+
             array_push($data,$item);
         }
  
@@ -440,6 +512,8 @@ class commandeController
         $commande = $this->commandeManager->getCommandeById($id);
         $client = $this->clientManager->getClientById($commande->getClient());
         $commandeDetail = $this->commandeManager->loadCommandeDetail($id);
+        $commandeDetailComposition = $this->commandeManager->loadCommandeDetailComposition($id);
+
         $data_cmd = [];
         $remise_existe = false;
         if (!empty($commandeDetail)){
@@ -482,8 +556,49 @@ class commandeController
                 }
             }
         }
-        require 'views/client/commande/pdf/facture.php';
+        //Modele composition
+        if (!empty($commandeDetailComposition)){
+            foreach ($commandeDetailComposition as $cmd){
+                $data_charge = [];
+                $somme_charge = 0;
+                $prod = $this->productionManager->getProductionByCmt($cmd['id_cmt']);
+                if(!empty($prod)){
+                    foreach ($prod as $p){
+                        $charges = $this->chargeManager->getChargesRessource($p->getIdProd());
+                        //Get data charge
+                        if(!empty($charges[0]) ){
+                            foreach ($charges as $charge){
+                                $somme_charge += $charge['prix_charge'];
+                                $item = array(
+                                    'ressource'=>$charge['nom_res'],
+                                    'prix'=>$charge['prix_charge'],
+                                );
+                                array_push($data_charge, $item);
+                            }
+                        }
+                    }
+                }
+                //Get data commande and charge
+                $item_cmd = array(
+                    'modele'=>$cmd['nom_mod_comp'],
+                    'tissu'=>$cmd['nom_tissu'],
+                    'tissu_qte'=>$cmd['quantite_tissu'],
+                    'tissu_prix'=>$cmd['prix_tissu'],
+                    'qte'=>$cmd['quantite_cmt'],
+                    'prix'=>$cmd['prix_mod_comp'],
+                    'remise'=>$cmd['remise_cmt'],
+                    'charge'=> $data_charge,
+                    'somme_charge'=> $somme_charge,
+                );
+                array_push($data_cmd, $item_cmd);
 
+                if ($cmd['remise_cmt']!=0){
+                    $remise_existe = true;
+                }
+            }
+        }
+
+        require 'views/client/commande/pdf/facture.php';
     }
 
     public function fieldValidation($param)

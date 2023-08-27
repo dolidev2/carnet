@@ -112,9 +112,7 @@ ob_start();
                                 <a href="<?= URL ?>client/info/<?= $client->getIdClient() ?>/commande_composition/<?=  $commande->getIdCommande() ?>" target="_blank">
                                     <button class="btn btn-info btn-inline">Composition</button>
                                 </a>
-                                <a href="<?= URL ?>client/info/<?= $client->getIdClient() ?>/commande_report/<?=  $commande->getIdCommande() ?>" target="_blank">
-                                    <button class="btn btn-primary btn-inline">Report</button>
-                                </a>
+                                <button class="btn btn-primary btn-inline" id="btn-affecter" data-toggle="modal" data-target="#report-Modal">Report</button>
                                 <a href="<?= URL ?>client/info/<?= $client->getIdClient() ?>/commande_satisfaction/<?=  $commande->getIdCommande() ?>" target="_blank">
                                     <button class="btn btn-warning btn-inline">Satisfaction</button>
                                 </a>
@@ -149,7 +147,7 @@ ob_start();
                                             <td><?= $dt['modele_prix'] ?></td>
                                             <td><?= $dt['prix'] ?></td>
                                             <td>
-                                                <a href="<?= URL ?>client/info/<?= $client->getIdClient() ?>/facture_article/<?=  $commande->getIdCommande() ?>" target="_blank">
+                                                <a href="" target="_blank">
                                                     <button class="btn btn-success btn-md"><i class="icofont icofont-printer"></i></button>
                                                 </a>
                                                 <form class="d-inline" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ?');" action="<?= URL ?>client/info/<?= $client->getIdClient() ?>/commande_svd/<?=  $commande->getIdCommande() ?>/<?=  $dt['id'] ?>" >
@@ -161,6 +159,36 @@ ob_start();
                                     <?php endif; ?>
                                     </tbody>
                                 </table>
+                                <!-- Modal     -->
+                                <div class="modal fade" id="report-Modal" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Message de report de Rdv</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="<?= URL ?>client/info/<?= $client->getIdClient() ?>/commande_report/<?=  $commande->getIdCommande() ?>" method="get">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="textAreaExample">Description</label>
+                                                        <textarea class="form-control" id="textAreaExample1" rows="4" name="description"></textarea>
+                                                    </div>
+                                                    <div class="form-outline ">
+                                                        <label class="col-sm-2 col-form-label">Date</label>
+                                                        <input type="date" class="form-control" name="date" >
+                                                    </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button  class="btn btn-primary waves-effect " type="submit">Valider</button>
+                                                <button type="button" class="btn btn-default waves-effect " data-dismiss="modal">Annuler</button>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--  End Modal     -->
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ require_once 'models/client/commande/commandeClientManager.php';
 require_once 'models/client/tissu/tissuClientManager.php';
 require_once 'models/programme/programmeManager.php';
 require_once 'models/modele/modeleManager.php';
+require_once 'models/modele_composition/modeleCompManager.php';
 require_once 'models/audit/auditManager.php';
 require_once 'models/caisse/caisseManager.php';
 require_once 'models/user/userManager.php';
@@ -18,6 +19,7 @@ private $clientManager;
 private $commandeManager;
 private $programmeManager;
 private $modeleManager;
+private $modeleCompoManager;
 private $tissuManager;
 private $auditManager;
 private $caisseManager;
@@ -43,6 +45,9 @@ public function __construct()
 
     $this->modeleManager = new modeleManager();
     $this->modeleManager->loadModele();
+
+    $this->modeleCompoManager = new modeleCompManager();
+    $this->modeleCompoManager->loadModeleComp();
 
     $this->tissuManager = new tissuClientManager();
     $this->tissuManager->loadTissu();
@@ -77,7 +82,16 @@ public function __construct()
             foreach ($programmes as $programme){
                 $somme += $programme->getPrixCmt();
                 $remise += $programme->getRemiseCmt();
-                $modele = $this->modeleManager->getModeleById($programme->getModele());
+                $simpleModele =  $this->modeleManager->getModeleById($programme->getModele());
+                $compoModele =  $this->modeleCompoManager->getModeleCompById($programme->getModele());
+               if(!empty($simpleModele)){
+                   $nomModele = $simpleModele->getNomModele();
+                   $prixModele = $simpleModele->getPrixModele();
+               }
+               if(!empty($compoModele)){
+                   $nomModele = $compoModele->getNomModComp();
+                   $prixModele = $compoModele->getPrixModComp();
+               }
                 $tissu = $this->tissuManager->getTissuById($programme->getTissu());
                 if(!empty($tissu)){
                     if($tissu->getQuantiteTissu()!= 0 && $tissu->getPrixTissu()!=0){
@@ -86,8 +100,8 @@ public function __construct()
                 }
              
                 $item = array(
-                    'modele_nom'=>$modele->getNomModele(),
-                    'modele_prix'=>$modele->getPrixModele(),
+                    'modele_nom'=>$nomModele,
+                    'modele_prix'=>$prixModele,
                     'tissu'=>$tissu->getNomTissu(),
                 );
                 array_push($data,$item);
