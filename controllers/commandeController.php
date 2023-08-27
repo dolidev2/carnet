@@ -5,6 +5,7 @@ require_once 'models/client/commande/commandeClientManager.php';
 require_once 'models/client/clientManager.php';
 require_once 'models/client/paiement/paiementClientManager.php';
 require_once 'models/modele/modeleManager.php';
+require_once 'models/modele_composition/modeleCompManager.php';
 require_once 'models/programme/programmeManager.php';
 require_once 'models/production/productionManager.php';
 require_once 'models/charge/chargeManager.php';
@@ -20,6 +21,7 @@ class commandeController
     private $modeleManager;
     private $programmeManager;
     private $commandeManager;
+    private $commandeCompoManager;
     private $paiementManager;
     private $auditManager;
     private $productionManager;
@@ -38,6 +40,9 @@ class commandeController
 
         $this->modeleManager =  new modeleManager();
         $this->modeleManager->loadModele();
+
+        $this->modeleCompoManager =  new modeleCompManager();
+        $this->modeleCompoManager->loadModeleComp();
 
         $this->programmeManager =  new programmeManager();
         $this->programmeManager->loadProgramme();
@@ -78,6 +83,7 @@ class commandeController
                 }
             }
         }
+
         $tissus_data = $this->tissuManager->getTissusClient($client);
         $tissus = [];
         if (!empty($tissus_data)){
@@ -87,7 +93,10 @@ class commandeController
                 }
             }
         }
+
         $modeles = $this->modeleManager->getModeles();
+        $modelesComposition = $this->modeleCompoManager->getModelesComp();
+
         //Numero commande
         $debut = DateTime::createFromFormat('Y-m-d', date("Y") . '-01-01')->format('Y-m-d');
         $fin = DateTime::createFromFormat('Y-m-d', date("Y") . '-12-31')->format('Y-m-d');
@@ -207,9 +216,21 @@ class commandeController
         if(!empty($_POST['modele']) && !empty($_POST['tissu'][0]) && !empty($_POST['quantite']) ){
             for($i=0;$i < count($_POST['modele']);$i++ ){
 
-                $modele = $this->modeleManager->getModeleById($this->fieldValidation($_POST['modele'][$i]));
+                $modele = $this->modeleManager->getModeleById($_POST['modele'][$i]);
+                $modeleComposition = $this->modeleCompoManager->getModeleCompById($_POST['modele'][$i]);
+                if($modele){
+
+                    $nom_modele = $modele->getNomModele();
+                    $prix_modele = $modele->getPrixModele();
+
+                }elseif($modeleComposition){
+
+                    $nom_modele = $modeleComposition->getNomModComp();
+                    $prix_modele = $modeleComposition->getPrixModComp();
+                }
+
+                $prix = ($prix_modele * $this->fieldValidation($_POST['quantite'][$i]));
                 $remise = (!empty($this->fieldValidation($_POST['remise'][$i])))? ($this->fieldValidation($_POST['remise'][$i]) * $this->fieldValidation($_POST['quantite'][$i])) : 0 ;
-                $prix = ($modele->getPrixModele() * $this->fieldValidation($_POST['quantite'][$i]));
 
                 //Add Programme
                 $data = array(
@@ -234,12 +255,10 @@ class commandeController
                 $this->tissuManager->updateTissuStatutBd($data_tissu);
 
                 $tissu =$this->tissuManager->getTissuById($data['tissu']);
-                $modele =$this->modeleManager->getModeleById($data['modele']);
                 $commande =$this->commandeManager->getCommandeById($data['commande']);
-
                 //Add audit
                 $audit = array(
-                    'desc'=> "Affection du tissu ".$tissu->getNomTissu()." ".$tissu->getDescTissu() ." au modèle : ".$modele->getNomModele()." dans la commande ".$commande->getDescCommande(),
+                    'desc'=> "Affection du tissu ".$tissu->getNomTissu()." ".$tissu->getDescTissu() ." au modèle : ".$nom_modele." dans la commande ".$commande->getDescCommande(),
                     'action'=>'Ajout',
                     'creat'=>date("Y-m-d"),
                     'user'=>$_SESSION['id'],

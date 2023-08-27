@@ -156,14 +156,10 @@
                         'id_modele'=>$modeleUnique->getIdModele(),
                         'id_comp'=>$comp->getIdModComp()
                     );
-
                     array_push($CompoundModeles, $item);
                 }
-
                 require "views/modele/updateComposition.php";
             }
-
-
         }
 
         public function updateSaveModele($id)
@@ -171,12 +167,50 @@
             $modele = $this->modeleManager->getModeleById($id);
             $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
             if($modele){
-                var_dump('modele');
+
+                $imageOldRecto = $modele->getRectoModele();
+                $imageRecentRecto = $_FILES['recto'];
+
+                $imageOldVerso = $modele->getVersoModele();
+                $imageRecentVerso = $_FILES['verso'];
+
+                if ($imageRecentRecto['size'] > 0) {
+                    unlink("public/image/modele/" . $imageOldRecto);
+                    $repertoire = "public/image/modele/";
+                    $nomImageToAddRecto = $this->uploadImage($imageRecentRecto, $repertoire);
+                } else {
+                    $nomImageToAddRecto = $imageOldRecto;
+                }
+
+                if ($imageRecentVerso['size'] > 0) {
+                    unlink("public/image/modele/" . $imageOldVerso);
+                    $repertoire = "public/image/modele/";
+                    $nomImageToAddVerso = $this->uploadImage($imageRecentVerso, $repertoire);
+                } else {
+                    $nomImageToAddVerso = $imageOldVerso;
+                }
+
+                $data = array(
+                    'nom' => $this->fieldValidation($_POST['nom']),
+                    'desc' => $this->fieldValidation($_POST['desc']),
+                    'prix' => $this->fieldValidation($_POST['prix']),
+                    'cout' => $this->fieldValidation($_POST['cout']),
+                    'cout_decoup' => $this->fieldValidation($_POST['coutd']),
+                    'mod' => date("Y-m-d"),
+                    'recto' => $nomImageToAddRecto ,
+                    'verso' => $nomImageToAddVerso,
+                    'id' => $this->fieldValidation($_POST['modele'])
+                );
+                $this->modeleManager->updateModeleBD($data);
             }
             elseif($modeleComposition){
 
-                if (isset($_POST['lignes'][0]) && !empty($_POST['lignes'][0]) && isset($_POST['modeles'][0]) && !empty($_POST['modeles'][0])) {
-                    //update ligne modele composition
+                if (isset($_POST['lignes'][0]) &&
+                    !empty($_POST['lignes'][0]) &&
+                    isset($_POST['modeles'][0]) &&
+                    !empty($_POST['modeles'][0]))
+                {
+                    //Update ligne modele composition
                     for ($i = 0; $i < count($_POST['lignes']); $i++) {
                         $item = array(
                             'mod' => date("Y-m-d"),
@@ -185,58 +219,84 @@
                         );
                         $this->ligneCompManager->updateLigneCompoBD($item);
                     }
-                    $ligne = $this->ligneCompManager->getLigneCompos();
-                    $lignes = $this->ligneCompManager->getLigneByModeleCompo($id);
+
+                   //Delete ligne modeles composition
+                    $lignesFormToDelete = [];
+                    $selectModeleCompo = $this->ligneCompManager->getLigneByModeleCompo($modeleComposition->getIdModComp());
+                    if(count($selectModeleCompo) != count($_POST['lignes'])){
+                        foreach ($selectModeleCompo as $item){
+                            foreach ($_POST['lignes'] as $ligne){
+                                if ((int) $ligne != (int) $item->getIdModComp()){
+                                    array_push($lignesFormToDelete, $item->getIdModComp());
+                                }
+                            }
+                        }
+                        if (!empty($lignesFormToDelete)){
+                            foreach ($lignesFormToDelete as $item){
+                            $this->ligneCompManager->deleteLigneCompoBD($item);
+                            }
+                        }
+                    }
                 }
 
-                echo '<pre>';
-                print_r([$modeleComposition->getIdModComp(),$lignes]);
-                echo '</pre>';
+                //Add ligne modele composition
+                if (isset($_POST['modeles_add'][0]) &&
+                    !empty($_POST['modeles_add'][0])){
+
+                    foreach ($_POST['modeles_add'] as $modele) {
+                        $data_modele = array(
+                            "modele" => $modele,
+                            'modele_comp' => $modeleComposition->getIdModComp(),
+                            'creat' => date("y-m-d"),
+                            'mod' => date("y-m-d")
+                        );
+                        $this->ligneCompManager->addLigneCompoBd($data_modele);
+                    }
+                }
+
+                //Update data modele composition
+                $imageOldRecto = $modeleComposition->getRectoModComp();
+                $imageRecentRecto = $_FILES['recto'];
+
+                $imageOldVerso = $modeleComposition->getVersoModComp();
+                $imageRecentVerso = $_FILES['verso'];
+
+                if ($imageRecentRecto['size'] > 0) {
+                    unlink("public/image/modele/" . $imageOldRecto);
+                    $repertoire = "public/image/modele/";
+                    $nomImageToAddRecto = $this->uploadImage($imageRecentRecto, $repertoire);
+                } else {
+                    $nomImageToAddRecto = $imageOldRecto;
+                }
+
+                if ($imageRecentVerso['size'] > 0) {
+                    unlink("public/image/modele/" . $imageOldVerso);
+                    $repertoire = "public/image/modele/";
+                    $nomImageToAddVerso = $this->uploadImage($imageRecentVerso, $repertoire);
+                } else {
+                    $nomImageToAddVerso = $imageOldVerso;
+                }
+
+                $data = array(
+                    'nom' => $this->fieldValidation($_POST['nom']),
+                    'desc' => $this->fieldValidation($_POST['desc']),
+                    'prix' => $this->fieldValidation($_POST['prix']),
+                    'recto' => $nomImageToAddRecto ,
+                    'verso' => $nomImageToAddVerso,
+                    'mod' => date("Y-m-d"),
+                    'id' => $modeleComposition->getIdModComp()
+                );
+                $this->modeleCompManager->updateModeleCompBD($data);
             }
 
-//            $modele = $this->modeleManager->getModeleById($id);
-//            $imageOldRecto = $modele->getRectoModele();
-//            $imageRecentRecto = $_FILES['recto'];
-//
-//            $imageOldVerso = $modele->getVersoModele();
-//            $imageRecentVerso = $_FILES['verso'];
-//
-//            if ($imageRecentRecto['size'] > 0) {
-//                unlink("public/image/modele/" . $imageOldRecto);
-//                $repertoire = "public/image/modele/";
-//                $nomImageToAddRecto = $this->uploadImage($imageRecentRecto, $repertoire);
-//            } else {
-//                $nomImageToAddRecto = $imageOldRecto;
-//            }
-//
-//            if ($imageRecentVerso['size'] > 0) {
-//                unlink("public/image/modele/" . $imageOldVerso);
-//                $repertoire = "public/image/modele/";
-//                $nomImageToAddVerso = $this->uploadImage($imageRecentVerso, $repertoire);
-//            } else {
-//                $nomImageToAddVerso = $imageOldVerso;
-//            }
-//
-//            $data = array(
-//                'nom' => $this->fieldValidation($_POST['nom']),
-//                'desc' => $this->fieldValidation($_POST['desc']),
-//                'recto' => $nomImageToAddRecto,
-//                'verso' => $nomImageToAddVerso,
-//                'mod' => date("Y-m-d"),
-//                'prix' => $this->fieldValidation($_POST['prix']),
-//                'cout' => $this->fieldValidation($_POST['cout']),
-//                'cout_decoup' => $this->fieldValidation($_POST['coutd']),
-//                'id' => $id
-//            );
-//            $this->modeleManager->updateModeleBD($data);
-//            $audit = array(
-//                'desc' => "Modification du  modèle: " . $data['nom'] . ' description ' . $data['desc'] . ' prix ' . $data['prix'],
-//                'action' => 'Modification',
-//                'creat' => date("Y-m-d"),
-//                'user' => $_SESSION['id'],
-//            );
-//            $this->auditManager->addAuditBd($audit);
-//            header('location: ' . URL . 'modele');
+            $audit = array(
+                'desc' => "Modification du  modèle: " . $data['nom'] . ' description ' . $data['desc'] . ' prix ' . $data['prix'],
+                'action' => 'Modification',
+                'creat' => date("Y-m-d"),
+                'user' => $_SESSION['id'],
+            );
+            $this->auditManager->addAuditBd($audit);
+            header('location: ' . URL . 'modele');
         }
 
         public function detailModele($id)
@@ -244,7 +304,7 @@
             $data = [];
             $modele = $this->modeleManager->getModeleById($id);
             $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
-            if (!empty($modele)){
+            if ($modele){
                 $item = array(
                     'id'=>$modele->getIdModele(),
                     'nom'=>$modele->getNomModele(),
@@ -257,7 +317,7 @@
                 );
                 $data['modele'] = $item;
             }
-            elseif(!empty($modeleComposition)){
+            elseif($modeleComposition){
                 $item = array(
                     'id'=>$modeleComposition->getIdModComp(),
                     'nom'=>$modeleComposition->getNomModComp(),
@@ -268,8 +328,7 @@
                 );
                 $data['modele'] = $item;
                 //Get composition modele
-                $lignecomposModele = $this->ligneCompManager->getLigneCompos($id);
-
+                $lignecomposModele = $this->ligneCompManager->getLigneByModeleCompo($id);
                 //Get all modeles
                 $data_modeles = [];
                 foreach ($lignecomposModele as $comp) {
@@ -293,20 +352,38 @@
         public function deleteSaveModele($id)
         {
             $modele = $this->modeleManager->getModeleById($id);
-            $programmes = $this->programmeManager->getProgrammesModele($modele);
-            if (!empty($programmes)) {
-                foreach ($programmes as $programme) {
-                    $this->programmeManager->deleteProgrammeBD($programme->getIdCmt());
+            $modeleComposition = $this->modeleCompManager->getModeleCompById($id);
+            if($modele){
+                $programmes = $this->programmeManager->getProgrammesModele($modele);
+                if (!empty($programmes)) {
+                    foreach ($programmes as $programme) {
+                        $this->programmeManager->deleteProgrammeBD($programme->getIdCmt());
+                    }
                 }
+                $audit = array(
+                    'desc' => "Suppression du modèle: " . $modele->getNomModele() . ' description ' . $modele->getDescModele() . ' prix ' . $modele->getPrixModele(),
+                    'action' => 'Suppression',
+                    'creat' => date("Y-m-d"),
+                    'user' => $_SESSION['id'],
+                );
+                $this->modeleManager->deleteModeleBD($id);
+
+            }elseif($modeleComposition){
+                $lignes = $this->ligneCompManager->getLigneByModeleCompo($id);
+                foreach ($lignes as $ligne){
+                    $this->ligneCompManager->deleteLigneCompoBD($ligne->getIdModComp());
+                }
+
+                $audit = array(
+                    'desc' => "Suppression du modèle: " . $modeleComposition->getNomModComp() . ' description ' . $modeleComposition->getDescModComp() . ' prix ' . $modeleComposition->getPrixModComp(),
+                    'action' => 'Suppression',
+                    'creat' => date("Y-m-d"),
+                    'user' => $_SESSION['id'],
+                );
+                $this->modeleCompManager->deleteModeleCompBD($id);
             }
-            $audit = array(
-                'desc' => "Suppression du modèle: " . $modele->getNomModele() . ' description ' . $modele->getDescModele() . ' prix ' . $modele->getPrixModele(),
-                'action' => 'Suppression',
-                'creat' => date("Y-m-d"),
-                'user' => $_SESSION['id'],
-            );
+
             $this->auditManager->addAuditBd($audit);
-            $this->modeleManager->deleteModeleBD($id);
             header('location: ' . URL . 'modele');
         }
 

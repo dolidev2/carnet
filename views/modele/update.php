@@ -35,7 +35,6 @@
                             <h4 class="sub-title"></h4>
                             <form method="post" action="<?= URL ?>modele/mv/<?= $modele->getIdModele() ?>"
                                   enctype="multipart/form-data">
-                                <button   class="btn btn-block m-2 add_field_button"><i class="ion-plus"></i></button>
                                 <div class="form-group">
                                     <div class="">
                                         <div class="form-group">

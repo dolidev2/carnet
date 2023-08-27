@@ -8,7 +8,6 @@ ob_start();
         <div class="page-header">
             <div class="page-header-title">
                 <h4>Detail du modèle</h4>
-
             </div>
             <div class="page-header-breadcrumb">
                 <ul class="breadcrumb-title">
@@ -77,7 +76,7 @@ ob_start();
                                 </div>
                                 <?php endif;?>
 
-                                <?php if (empty($data['composition'])): ?>
+                                <?php if (isset($data['modele']['montage']) && !empty($data['modele']['montage'])): ?>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="form-label">Côut montage</label>

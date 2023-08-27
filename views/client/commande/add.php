@@ -1,6 +1,7 @@
 <?php
 $header = '';
-ob_start(); ?>
+ob_start();
+?>
 
 <div class="main-body">
     <div class="page-wrapper">
@@ -63,10 +64,10 @@ ob_start(); ?>
                     <!-- Basic Form Inputs card end -->
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="create-commande">
                 <div class="col-sm-12">
                     <!-- Basic Form Inputs card start -->
-                    <div class="card">
+                    <div class="card" >
                         <div class="card-header">
                             <p>Créer une commande du client</p>
                         </div>
@@ -101,7 +102,7 @@ ob_start(); ?>
                 </div>
             </div>
             <?php if (!empty($commandes)): ?>
-                <div class="row">
+                <div class="row" id="list-commande">
                     <div class="col-sm-12">
                         <!-- Basic Form Inputs card start -->
                         <div class="card">
@@ -135,11 +136,22 @@ ob_start(); ?>
                                             <div class="">
                                                 <select name="modele[]"  id="modeles" class="form-control" required>
                                                     <?php
+
                                                     if(!empty($modeles)):
                                                         foreach ($modeles as $modele):
                                                             ?>
                                                             <option value="<?= $modele->getIdModele() ?>">
                                                                 <?= $modele->getNomModele().' <=> '. $modele->getDescModele().' <=> '.$modele->getPrixModele() ?>
+                                                            </option>
+                                                        <?php
+                                                        endforeach;
+                                                    endif;
+
+                                                    if(!empty($modelesComposition)):
+                                                        foreach ($modelesComposition as $item):
+                                                            ?>
+                                                            <option style="background: gray; color: white;" value="<?= $item->getIdModComp() ?>">
+                                                                <?= $item->getNomModComp().' <=> '. $item->getDescModComp().' <=> '.$item->getPrixModComp() ?>
                                                             </option>
                                                         <?php
                                                         endforeach;

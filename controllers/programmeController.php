@@ -124,20 +124,6 @@ class programmeController
                                     'qte_prod' => $qteArticleProd[0]['qte'],
                                     'qte_prod_decoup' => $qteArticleProdDecoup[0]['qte'],
                                 );
-                                //Get compo modele
-//                                $modeleCompId = $this->modeleCompManager->getModeleComp($article['id_modele']);
-//                                $data_modele_comp = [];
-//                                if(!empty($modeleCompId)){
-//                                    foreach ($modeleCompId as $comp){
-//                                        $modeleId = $this->modeleManager->getModeleById($comp['modele_comp']);
-//                                        $modeleItem = array(
-//                                            'nom_modele'=>$modeleId->getNomModele(),
-//                                            'prix_modele'=>$modeleId->getPrixModele(),
-//                                        );
-//                                        array_push($data_modele_comp, $modeleItem);
-//                                    }
-//                                    $itemArticle['modele']= $data_modele_comp;
-//                                }
 
                                 array_push($articles,$itemArticle);
                             }
@@ -152,6 +138,25 @@ class programmeController
                     array_push($data,$item);
                 }
             }
+            //commande from modele composition
+
+            //Get compo modele
+//                                $modeleCompId = $this->modeleCompManager->getModeleComp($article['id_modele']);
+//                                $data_modele_comp = [];
+//                                if(!empty($modeleCompId)){
+//                                    foreach ($modeleCompId as $comp){
+//                                        $modeleId = $this->modeleManager->getModeleById($comp['modele_comp']);
+//                                        $modeleItem = array(
+//                                            'nom_modele'=>$modeleId->getNomModele(),
+//                                            'prix_modele'=>$modeleId->getPrixModele(),
+//                                        );
+//                                        array_push($data_modele_comp, $modeleItem);
+//                                    }
+//                                    $itemArticle['modele']= $data_modele_comp;
+//                                }
+
+
+
         }
         require "views/commande/home.php";
     }

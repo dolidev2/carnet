@@ -1,5 +1,24 @@
 <?php ob_start();
 ?>
+    <style>
+        #list-commande{
+            /*background: gray;*/
+            color: black;
+            overflow-y: scroll;
+            /*scrollbar-color: rebeccapurple green;*/
+            /*scrollbar-width: thin;*/
+            max-height: 800px;
+        }
+        #btn-affecter{
+            background: gray;
+            color: white;
+        }
+        /*.main-body{*/
+        /*    overflow-y:scroll ;*/
+        /*    max-height: 100%;*/
+        /*}*/
+
+    </style>
     <!-- Data Table Css -->
     <link rel="stylesheet" type="text/css" href="<?= URL ?>public/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="<?= URL ?>public/bower_components/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
@@ -72,10 +91,10 @@ ob_start();
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- Zero config.table start -->
-                        <div class="card">
+                        <div class="card" >
                             <div class="card-block">
-                                <button class="btn-block m-2 btn btn-toolbar-primary" data-toggle="modal" data-target="#affecter-Modal">Affecter</button>
-                                <div class="dt-responsive table-responsive">
+                                <button class="btn-block m-2 btn btn-toolbar-primary " id="btn-affecter" data-toggle="modal" data-target="#affecter-Modal">Affecter</button>
+                                <div class="dt-responsive table-responsive" id="list-commande">
                                     <form method="post" action="<?= URL ?>commande/av">
                                     <table  class="table table-striped table-bordered ">
                                         <thead>
@@ -242,7 +261,7 @@ ob_start();
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- Zero config.table start -->
-                        <div class="card">
+                        <div class="card" id="list-programme">
                             <div class="card-block">
                                 <div class="dt-responsive table-responsive">
 
